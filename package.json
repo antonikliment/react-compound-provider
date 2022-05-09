@@ -1,0 +1,36 @@
+{
+  "name": "react-compount-provider",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel lib -s -d dist --ignore '**/*.test.js' --extensions '.ts,.tsx'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antonikliment/react-compount-provider.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antonikliment/react-compount-provider/issues"
+  },
+  "peerDependencies": {
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.17.10",
+    "@babel/core": "7.17.10",
+    "@babel/preset-react": "7.16.7",
+    "@babel/preset-typescript": "7.16.7",
+    "core-js": "^3.22.4",
+    "jest": "^28.1.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "homepage": "https://github.com/antonikliment/react-compount-provider#readme"
+}
