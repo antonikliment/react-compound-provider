@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import * as React from 'react'
 import {act, render, screen} from '@testing-library/react'
-import {CompoundProvider, createGlobalContextHook, createGlobalHookWithDedicatedProvider} from './'
+import {CompoundProvider, createGlobalContextHook, createGlobalHookWithProvider} from './'
 import {__resetState} from "./provider-storage";
 import {__resetState as __hookReset} from "./hook-storage";
 
@@ -28,9 +28,9 @@ describe("HookFactories", () => {
         });
         expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 2`);
     });
-    test("createGlobalHookWithDedicatedProvider useState", () => {
+    test("createGlobalHookWithProvider useState", () => {
         let valueBumper;
-        const useGlobalState = createGlobalHookWithDedicatedProvider(React.useState, 1);
+        const useGlobalState = createGlobalHookWithProvider(React.useState, 1);
         const TestComponent = () => {
             const [value, setValue] = useGlobalState();
             valueBumper = setValue;
@@ -46,12 +46,13 @@ describe("HookFactories", () => {
         expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 2`);
     });
 
-    test("createGlobalHookWithDedicatedProvider useState", () => {
+    test("createGlobalHookWithProvider useState", () => {
         let valueBumper;
-        const useGlobalState = createGlobalHookWithDedicatedProvider(React.useState, 1);
-        const useGlobalStateAlt = createGlobalHookWithDedicatedProvider(React.useState, 2);
+        const useGlobalState = createGlobalHookWithProvider(React.useState, 1);
+        const useGlobalStateAlt = createGlobalHookWithProvider(React.useState, 2);
         const TestComponent = () => {
             const [value, setValue] = useGlobalState();
+            const [valueTw, setValueTw] = useGlobalStateAlt();
             valueBumper = setValue;
             return (<div data-testid="component-with-hook">Value {value}</div>)
         }

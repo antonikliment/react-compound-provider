@@ -1,7 +1,6 @@
 # React Compound
  
 
-
 ## Usage 
 
 Place the CompoundProvider component around all dependant components;

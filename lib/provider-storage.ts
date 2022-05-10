@@ -27,7 +27,7 @@ export function registerProvider(provider: FunctionComponent<any>) {
     registerProviderWithOrder(provider, sequentialOrder++);
 }
 export function registerProviderWithKey(provider: FunctionComponent<any>, key: number) {
-    registerProviderWithOrder(provider, sequentialOrder++);
+    registerProviderWithOrderAndKey(provider, sequentialOrder++, key);
 }
 
 export function registerProviderWithOrder(provider: FunctionComponent<any>, order: number) {

@@ -1,7 +1,7 @@
 import * as React from "react";
 import {CompoundRootContext} from "./compound-root-context";
 import {registerHook} from "./hook-storage";
-import {registerProvider, registerProviderWithKey} from "./provider-storage";
+import {registerProviderWithKey} from "./provider-storage";
 
 
 type TupleHook<S> = <S, > (...args) =>  readonly [S, (a:S) => void]
@@ -18,7 +18,7 @@ export const createGlobalContextHook = <T,>(hookFactory, ...args): TupleHook<T> 
     };
 }
 
-export const createGlobalHookWithDedicatedProvider = (hookFactory, ...args) => {
+export const createGlobalHookWithProvider = (hookFactory, ...args) => {
     const DedicatedContext = React.createContext(undefined);
     const DedicatedProvider = (props) => {
         const value = hookFactory(...args);
