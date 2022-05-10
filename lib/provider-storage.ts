@@ -1,4 +1,4 @@
-import {FunctionComponent} from "react";
+import {createElement, FunctionComponent} from "react";
 import {simpleHashCode} from "./util";
 
 interface ProviderEntry {
@@ -9,7 +9,7 @@ interface ProviderEntry {
 let providerStorage: Record<number, ProviderEntry> = {};
 let appInitialized = false;
 let sequentialOrder = 0;
-
+const fallbackComponent = ({children}) => children;
 export function __resetState() {
     providerStorage = {};
     appInitialized = false;
@@ -44,4 +44,19 @@ export function registerProviderWithOrder(provider: FunctionComponent<any>, orde
         return;
     }
     providerStorage[key] = {provider, order};
+}
+
+export function providerFactory(children, props) {
+    const providers = Object.values(__getProviders())
+        .sort((a, b) => b.order - a.order)
+        .map(entry => entry.provider);
+    const lastIndex = providers.length - 1;
+    const baseElement: FunctionComponent<any> = providers[lastIndex] || fallbackComponent;
+    let childElement = createElement(baseElement, props, children);
+
+    for (let i = lastIndex - 1; i >= 0; i--) {
+        childElement = createElement(providers[i], props, childElement);
+    }
+
+    return childElement;
 }
