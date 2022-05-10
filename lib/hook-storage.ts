@@ -1,7 +1,6 @@
 let hookStorage: Record<number, Function> = {};
 let lockStorage = false;
 
-
 export function __resetState() {
     hookStorage = {};
     lockStorage = false;

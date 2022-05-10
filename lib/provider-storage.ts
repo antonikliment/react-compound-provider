@@ -26,9 +26,15 @@ export function __getProviders() {
 export function registerProvider(provider: FunctionComponent<any>) {
     registerProviderWithOrder(provider, sequentialOrder++);
 }
+export function registerProviderWithKey(provider: FunctionComponent<any>, key: number) {
+    registerProviderWithOrder(provider, sequentialOrder++);
+}
 
 export function registerProviderWithOrder(provider: FunctionComponent<any>, order: number) {
-    const key = simpleHashCode(provider.toString());
+    return registerProviderWithOrderAndKey(provider, order, simpleHashCode(provider.toString()));
+}
+export function registerProviderWithOrderAndKey(provider: FunctionComponent<any>, order: number, key: number) {
+
     if (typeof provider !== 'function') {
         throw new Error("Provider must be a function");
     }
@@ -40,7 +46,7 @@ export function registerProviderWithOrder(provider: FunctionComponent<any>, orde
         return;
     }
     if (!!providerStorage[key]) {
-        console.warn("Provider already registered");
+        console.warn(`Provider ${key} already registered`);
         return;
     }
     providerStorage[key] = {provider, order};

@@ -1,10 +1,10 @@
 import * as React from "react";
 import {CompoundRootContext} from "./compound-root-context";
 import {registerHook} from "./hook-storage";
-import {registerProvider} from "./provider-storage";
+import {registerProvider, registerProviderWithKey} from "./provider-storage";
 
 
-type TupleHook<S> = <S, > (...args) =>  [S, any]
+type TupleHook<S> = <S, > (...args) =>  readonly [S, (a:S) => void]
 
 export const createGlobalContextHook = <T,>(hookFactory, ...args): TupleHook<T> => {
     const stateKey = registerHook(() => hookFactory(...args))
@@ -26,7 +26,7 @@ export const createGlobalHookWithDedicatedProvider = (hookFactory, ...args) => {
             <DedicatedContext.Provider {...props} value={value}/>
         )
     };
-    registerProvider(DedicatedProvider);
+    registerProviderWithKey(DedicatedProvider, Math.random());
     return function () {
         const context = React.useContext(DedicatedContext);
 
