@@ -1,7 +1,15 @@
-
 const hookStorage: Record<number, Function> = {};
+let lockStorage = false;
+
+export function __lockHookStorage() {
+    lockStorage = true;
+}
 
 export function registerHook(hookFunction: Function) {
+    if (lockStorage) {
+        console.warn("First render is complete. No more hooks can be registered")
+        return;
+    }
     const key = Math.random();
     hookStorage[key] = hookFunction;
     return `${key}`;

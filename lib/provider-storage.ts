@@ -7,16 +7,16 @@ interface ProviderEntry {
 }
 
 let providerStorage: Record<number, ProviderEntry> = {};
-let appInitialized = false;
+let lockStorage = false;
 let sequentialOrder = 0;
 const fallbackComponent = ({children}) => children;
 export function __resetState() {
     providerStorage = {};
-    appInitialized = false;
+    lockStorage = false;
 }
 
-export function __setInitialized() {
-    appInitialized = true;
+export function __lockProviderRegistration() {
+    lockStorage = true;
 }
 
 export function __getProviders() {
@@ -35,7 +35,7 @@ export function registerProviderWithOrder(provider: FunctionComponent<any>, orde
     if (order === undefined) {
         throw new Error("Provider order is required");
     }
-    if (appInitialized) {
+    if (lockStorage) {
         console.warn("App already rendered, no more providers can be registered")
         return;
     }
