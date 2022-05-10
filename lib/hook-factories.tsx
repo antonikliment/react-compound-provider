@@ -3,15 +3,18 @@ import {CompoundRootContext} from "./compound-root-context";
 import {registerHook} from "./hook-storage";
 import {registerProvider} from "./provider-storage";
 
-export const createGlobalContextHook = (hookFactory, ...args) => {
+
+type TupleHook<S> = <S, > (...args) =>  [S, any]
+
+export const createGlobalContextHook = <T,>(hookFactory, ...args): TupleHook<T> => {
     const stateKey = registerHook(() => hookFactory(...args))
-    return function  () {
+    return function () {
         const context = React.useContext(CompoundRootContext);
 
         if (context === undefined) {
             throw new Error('CompoundRootContext is not defined. Is this hook called outside the CompoundProvider?')
         }
-        return context[stateKey];
+        return context[stateKey]
     };
 }
 

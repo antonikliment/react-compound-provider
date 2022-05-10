@@ -10,7 +10,7 @@ export function __lockHookStorage() {
     lockStorage = true;
 }
 
-export function registerHook(hookFunction: Function) {
+export function registerHook(hookFunction: <T> (...args)=>T) {
     if (lockStorage) {
         console.warn("First render is complete. No more hooks can be registered")
         return;

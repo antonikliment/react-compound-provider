@@ -12,9 +12,9 @@ describe("HookFactories", () => {
     });
     test("createGlobalContextHook useState", () => {
         let valueBumper;
-        const useGlobalState = createGlobalContextHook(React.useState, 1);
+        const useGlobalState = createGlobalContextHook<number>(React.useState, 1);
         const TestComponent = () => {
-            const [value, setValue] = useGlobalState();
+            const [value, setValue] = useGlobalState<number>();
             valueBumper = setValue;
             return (<div data-testid="component-with-hook">Value {value}</div>)
         }
