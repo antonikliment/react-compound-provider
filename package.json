@@ -3,34 +3,47 @@
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
+  "keywords": [
+    "react",
+    "context",
+    "provider",
+    "combine",
+    "providers"
+  ],
   "scripts": {
     "build": "babel lib -s -d dist --ignore '**/*.test.js' --extensions '.ts,.tsx'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antonikliment/react-compount-provider.git"
+    "url": "git+https://github.com/antonikliment/react-compound-provider.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/antonikliment/react-compount-provider/issues"
+    "url": "https://github.com/antonikliment/react-compound-provider/issues"
   },
   "peerDependencies": {
     "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-router-dom": "^6.3.0"
+    "react-dom": "^18.1.0"
   },
   "devDependencies": {
     "@babel/cli": "7.17.10",
     "@babel/core": "7.17.10",
+    "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "7.16.7",
     "@babel/preset-typescript": "7.16.7",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@types/jest": "^27.5.0",
+    "babel-jest": "^28.1.0",
     "core-js": "^3.22.4",
     "jest": "^28.1.0",
+    "jest-environment-jsdom": "^28.1.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "typescript": "^4.6.4"
   },
   "homepage": "https://github.com/antonikliment/react-compount-provider#readme"
 }
