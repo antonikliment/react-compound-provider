@@ -63,6 +63,5 @@ export function providerFactory(children, props) {
     for (let i = lastIndex - 1; i >= 0; i--) {
         childElement = createElement(providers[i], props, childElement);
     }
-
     return childElement;
 }

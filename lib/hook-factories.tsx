@@ -6,8 +6,8 @@ import {registerProviderWithKey} from "./provider-storage";
 
 type TupleHook<S> = <S, > (...args) =>  readonly [S, (a:S) => void]
 
-export const createGlobalCustomHookInRootContext = <T,>(hookFactory, ...globalArgs): TupleHook<T> => {
-    const stateKey = registerHook(()=>hookFactory(...globalArgs))
+export const createGlobalCustomHookInRootContext = <T,> (hookFactory, ...hookDefaultArgs): TupleHook<T> => {
+    const stateKey = registerHook(() => hookFactory(...hookDefaultArgs))
     return function () {
         const context = React.useContext(CompoundRootContext);
 
@@ -18,23 +18,25 @@ export const createGlobalCustomHookInRootContext = <T,>(hookFactory, ...globalAr
         return context[stateKey];
     };
 }
-
-export const createGlobalCustomHookWithProvider = (hookFactory, ...globalArgs) => {
+// TODO fix
+export const createGlobalCustomHookWithProvider = (hookFactory, ...hookDefaultArgs) => {
     const DedicatedContext = React.createContext(undefined);
+    const key = Math.random();
     const DedicatedProvider = (props) => {
+        const value  = hookFactory(...hookDefaultArgs);
         return (
-            <DedicatedContext.Provider {...props} value={hookFactory}/>
+            <DedicatedContext.Provider {...props} key={key} value={value}/>
         )
     };
-    registerProviderWithKey(DedicatedProvider, Math.random());
+    registerProviderWithKey(DedicatedProvider, key);
 
 
-    return function ()  {
+    return function () {
         const context = React.useContext(DedicatedContext);
-
+        console.log('context', context);
         if (context === undefined) {
             throw new Error('CompoundRootContext is not defined. Is this hook called outside the CompoundProvider?')
         }
-        return context(...globalArgs);
+        return context;
     };
 }

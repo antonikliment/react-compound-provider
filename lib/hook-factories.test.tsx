@@ -33,7 +33,7 @@ describe("HookFactories", () => {
         let valueBumper;
         const useGlobalState = createGlobalCustomHookWithProvider(React.useState, 1);
         const TestComponent = () => {
-            const [value, setValue] = useGlobalState(1);
+            const [value, setValue] = useGlobalState();
             valueBumper = setValue;
             return (<div data-testid="component-with-hook">Value {value}</div>)
         }
@@ -84,8 +84,7 @@ describe("HookFactories", () => {
         });
         expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 2`);
     });
-
-    test("createGlobalCustomHookWithProvider useState in two components", () => {
+    test("createGlobalCustomHookInRootContext useState in two components", () => {
         let valueBumper;
         const useGlobalState = createGlobalCustomHookInRootContext(React.useState, 1);
         const TestComponent = () => {
@@ -108,5 +107,32 @@ describe("HookFactories", () => {
         });
         expect(screen.getByTestId("component-with-hook-two")).toHaveTextContent(`Value 2`);
         expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 2`);
+    });
+
+    test("createGlobalCustomHookWithProvider useState in two components", () => {
+        let valueBumper;
+        const useGlobalState = createGlobalCustomHookWithProvider(React.useState, 1);
+        const TestComponent = () => {
+            const [value,] = useGlobalState();
+            return (<div data-testid="component-with-hook">Value {value}</div>)
+        }
+        const TestComponentTwo = () => {
+            const [value, setValue] = useGlobalState();
+            valueBumper = setValue;
+            return (<div data-testid="component-with-hook-two">Value {value}</div>)
+        }
+        render(<CompoundProvider><TestComponent /><TestComponentTwo/></CompoundProvider>);
+        expect(screen.getByTestId("component-with-hook")).not.toBeNull();
+        expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 1`);
+        expect(screen.getByTestId("component-with-hook-two")).not.toBeNull();
+        expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 1`);
+
+        act(() => {
+            valueBumper(2);
+        });
+
+
+        expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 2`);
+        expect(screen.getByTestId("component-with-hook-two")).toHaveTextContent(`Value 2`);
     });
 });
