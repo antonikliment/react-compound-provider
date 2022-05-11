@@ -5,18 +5,22 @@ export function __resetState() {
     hookStorage = {};
     lockStorage = false;
 }
+
 export function __lockHookStorage() {
     lockStorage = true;
 }
 
-export function registerHook(hookFunction: <T> (...args) => T) {
+export function registerHook(hookFunction: <T> (...args) => T, key = Math.random()) {
     if (lockStorage) {
         console.warn("First render is complete. No more hooks can be registered")
         return;
     }
-    const key = Math.random();
+
     hookStorage[key] = hookFunction;
     return `${key}`;
+}
+export function bindHookArgs( key, ...args) {
+    hookStorage[key].bind(null, ...args)
 }
 
 export function compoundHookState() {

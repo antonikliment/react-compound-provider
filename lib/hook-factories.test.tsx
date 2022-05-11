@@ -153,23 +153,31 @@ describe("HookFactories", () => {
 
     test("useCompoundState in two components set the same value", () => {
         let valueBumper;
+        let valueBumperSecond;
         const TestComponent = () => {
-            const [value,setValue] = useCompoundState("bla", 1);
+            const [value,setValue] = useCompoundState("bla");
             valueBumper = setValue;
             return (<div data-testid="component-with-hook">Value {value}</div>)
         }
         const TestComponentTwo = () => {
-            const [value, setValue] = useCompoundState("bla");
+            const [value, setValue] = useCompoundState("bla");// This default is ignored
+
+            valueBumperSecond = setValue;
             return (<div data-testid="component-with-hook-two">Value {value}</div>)
         }
         render(<CompoundProvider><TestComponent /><TestComponentTwo/></CompoundProvider>);
         expect(screen.getByTestId("component-with-hook")).not.toBeNull();
         expect(screen.getByTestId("component-with-hook-two")).not.toBeNull();
-
         act(() => {
             valueBumper(2);
         });
         expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 2`);
         expect(screen.getByTestId("component-with-hook-two")).toHaveTextContent(`Value 2`);
+
+        act(() => {
+            valueBumperSecond(12);
+        });
+        expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 12`);
+        expect(screen.getByTestId("component-with-hook-two")).toHaveTextContent(`Value 12`);
     });
 });
