@@ -4,9 +4,9 @@ import {registerHook} from "./hook-storage";
 import {registerProviderWithKey} from "./provider-storage";
 
 
-type TupleHook<S> = <S, > (...args) =>  readonly [S, (a:S) => void]
+type TupleHook<S> = <S, > (...args) => readonly [S, (a: S) => void]
 
-export const createGlobalCustomHookInRootContext = <T,> (hookFactory, ...hookDefaultArgs): TupleHook<T> => {
+export const createGlobalCustomHookInRootContext = <T, >(hookFactory, ...hookDefaultArgs): TupleHook<T> => {
     const stateKey = registerHook(() => hookFactory(...hookDefaultArgs))
     return function () {
         const context = React.useContext(CompoundRootContext);
@@ -23,7 +23,7 @@ export const createGlobalCustomHookWithProvider = (hookFactory, ...hookDefaultAr
     const DedicatedContext = React.createContext(undefined);
     const key = Math.random();
     const DedicatedProvider = (props) => {
-        const value  = hookFactory(...hookDefaultArgs);
+        const value = hookFactory(...hookDefaultArgs);
         return (
             <DedicatedContext.Provider {...props} key={key} value={value}/>
         )
@@ -38,3 +38,15 @@ export const createGlobalCustomHookWithProvider = (hookFactory, ...hookDefaultAr
         return context;
     };
 }
+
+const compoundStateReducer = (name) => (state, action) => typeof action === 'function' ? action(state[name]) : {
+    ...state,
+    [name]: action
+};
+
+const internalCompoundState = (name, defaultValue?) => {
+    const [state, setState]= React.useReducer(compoundStateReducer(name), {[name]: defaultValue});
+    return [state[name], setState]
+}
+
+export const useCompoundState = createGlobalCustomHookInRootContext(internalCompoundState);

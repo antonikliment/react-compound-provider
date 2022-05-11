@@ -1,7 +1,12 @@
 import '@testing-library/jest-dom'
 import * as React from 'react'
 import {act, render, screen} from '@testing-library/react'
-import {CompoundProvider, createGlobalCustomHookInRootContext, createGlobalCustomHookWithProvider} from './'
+import {
+    CompoundProvider,
+    createGlobalCustomHookInRootContext,
+    createGlobalCustomHookWithProvider,
+    useCompoundState
+} from './'
 import {__resetState} from "./provider-storage";
 import {__resetState as __hookReset} from "./hook-storage";
 
@@ -110,15 +115,17 @@ describe("HookFactories", () => {
     });
 
     test("createGlobalCustomHookWithProvider useState in two components", () => {
-        let valueBumper;
+        let valueBumperFirst;
+        let valueBumperSecond;
         const useGlobalState = createGlobalCustomHookWithProvider(React.useState, 1);
         const TestComponent = () => {
-            const [value,] = useGlobalState();
+            const [value,setValue] = useGlobalState();
+            valueBumperFirst = setValue;
             return (<div data-testid="component-with-hook">Value {value}</div>)
         }
         const TestComponentTwo = () => {
             const [value, setValue] = useGlobalState();
-            valueBumper = setValue;
+            valueBumperSecond = setValue;
             return (<div data-testid="component-with-hook-two">Value {value}</div>)
         }
         render(<CompoundProvider><TestComponent /><TestComponentTwo/></CompoundProvider>);
@@ -128,10 +135,40 @@ describe("HookFactories", () => {
         expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 1`);
 
         act(() => {
-            valueBumper(2);
+            valueBumperSecond(2);
         });
 
+        expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 2`);
+        expect(screen.getByTestId("component-with-hook-two")).toHaveTextContent(`Value 2`);
 
+        act(() => {
+            valueBumperSecond(3);
+        });
+
+        expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 3`);
+        expect(screen.getByTestId("component-with-hook-two")).toHaveTextContent(`Value 3`);
+
+    });
+
+
+    test("useCompoundState in two components set the same value", () => {
+        let valueBumper;
+        const TestComponent = () => {
+            const [value,setValue] = useCompoundState("bla", 1);
+            valueBumper = setValue;
+            return (<div data-testid="component-with-hook">Value {value}</div>)
+        }
+        const TestComponentTwo = () => {
+            const [value, setValue] = useCompoundState("bla");
+            return (<div data-testid="component-with-hook-two">Value {value}</div>)
+        }
+        render(<CompoundProvider><TestComponent /><TestComponentTwo/></CompoundProvider>);
+        expect(screen.getByTestId("component-with-hook")).not.toBeNull();
+        expect(screen.getByTestId("component-with-hook-two")).not.toBeNull();
+
+        act(() => {
+            valueBumper(2);
+        });
         expect(screen.getByTestId("component-with-hook")).toHaveTextContent(`Value 2`);
         expect(screen.getByTestId("component-with-hook-two")).toHaveTextContent(`Value 2`);
     });
