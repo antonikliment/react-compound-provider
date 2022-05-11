@@ -6,19 +6,20 @@ import {registerProviderWithKey} from "./provider-storage";
 
 type TupleHook<S> = <S, > (...args) =>  readonly [S, (a:S) => void]
 
-export const createGlobalCustomHookInRootContext = <T,>(hookFactory): TupleHook<T> => {
-    const stateKey = registerHook(hookFactory)
-    return function (...args) {
+export const createGlobalCustomHookInRootContext = <T,>(hookFactory, ...globalArgs): TupleHook<T> => {
+    const stateKey = registerHook(()=>hookFactory(...globalArgs))
+    return function () {
         const context = React.useContext(CompoundRootContext);
 
         if (context === undefined) {
             throw new Error('CompoundRootContext is not defined. Is this hook called outside the CompoundProvider?')
         }
-        return context[stateKey](...args)
+
+        return context[stateKey];
     };
 }
 
-export const createGlobalCustomHookWithProvider = (hookFactory) => {
+export const createGlobalCustomHookWithProvider = (hookFactory, ...globalArgs) => {
     const DedicatedContext = React.createContext(undefined);
     const DedicatedProvider = (props) => {
         return (
@@ -26,12 +27,14 @@ export const createGlobalCustomHookWithProvider = (hookFactory) => {
         )
     };
     registerProviderWithKey(DedicatedProvider, Math.random());
-    return function (...args)  {
+
+
+    return function ()  {
         const context = React.useContext(DedicatedContext);
 
         if (context === undefined) {
             throw new Error('CompoundRootContext is not defined. Is this hook called outside the CompoundProvider?')
         }
-        return context(...args);
+        return context(...globalArgs);
     };
 }

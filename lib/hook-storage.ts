@@ -25,7 +25,7 @@ export function compoundHookState() {
     for (const hookKeyVal of hooks) {
         const key = hookKeyVal[0];
         const value = hookKeyVal[1];
-        compoundState[key] = value;
+        compoundState[key] = value();
     }
     return compoundState;
 }
