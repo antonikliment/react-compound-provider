@@ -9,7 +9,7 @@ export function __lockHookStorage() {
     lockStorage = true;
 }
 
-export function registerHook(hookFunction: <T> (...args)=>T) {
+export function registerHook(hookFunction: <T> (...args) => T) {
     if (lockStorage) {
         console.warn("First render is complete. No more hooks can be registered")
         return;
@@ -25,7 +25,7 @@ export function compoundHookState() {
     for (const hookKeyVal of hooks) {
         const key = hookKeyVal[0];
         const value = hookKeyVal[1];
-        compoundState[key] = value();
+        compoundState[key] = value;
     }
     return compoundState;
 }
