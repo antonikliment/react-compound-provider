@@ -22,9 +22,9 @@ export function registerHook(hookFunction: <T> (...args) => T) {
 export function compoundHookState() {
     let compoundState = {};
     const hooks = Object.entries(hookStorage);
-    for (const hookKeyVal of hooks) {
-        const key = hookKeyVal[0];
-        const value = hookKeyVal[1];
+    for (const hookPair of hooks) {
+        const key = hookPair[0];
+        const value = hookPair[1];
         compoundState[key] = value();
     }
     return compoundState;

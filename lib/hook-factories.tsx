@@ -18,7 +18,7 @@ export const createGlobalCustomHookInRootContext = <T,> (hookFactory, ...hookDef
         return context[stateKey];
     };
 }
-// TODO fix
+
 export const createGlobalCustomHookWithProvider = (hookFactory, ...hookDefaultArgs) => {
     const DedicatedContext = React.createContext(undefined);
     const key = Math.random();
@@ -30,10 +30,8 @@ export const createGlobalCustomHookWithProvider = (hookFactory, ...hookDefaultAr
     };
     registerProviderWithKey(DedicatedProvider, key);
 
-
     return function () {
         const context = React.useContext(DedicatedContext);
-        console.log('context', context);
         if (context === undefined) {
             throw new Error('CompoundRootContext is not defined. Is this hook called outside the CompoundProvider?')
         }
