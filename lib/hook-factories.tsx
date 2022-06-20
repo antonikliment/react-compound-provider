@@ -1,6 +1,6 @@
 import * as React from "react";
 import {CompoundRootContext} from "./compound-root-context";
-import {bindHookArgs, registerHook} from "./hook-storage";
+import {rebindHook, registerHook} from "./hook-storage";
 import {registerProviderWithKey} from "./provider-storage";
 
 
@@ -46,7 +46,13 @@ const compoundStateReducer = (name) => (state, action) => typeof action === 'fun
 
 const internalCompoundState = (name) => {
     const [state, setState] = React.useReducer(compoundStateReducer(name), {});
-    return [state[name], setState]
+    if(!name){
+        throw new Error("No name");
+    }
+    return [state[name], (val)=>{
+        console.log('internalCompoundState setState', {name}, {state})
+        setState(val)
+    }]
 }
 // @ts-ignore
 const compoundStateHook = registerHook(internalCompoundState, "useCompoundState");
@@ -55,6 +61,7 @@ export const useCompoundState = (name) => {
     if (context === undefined) {
         throw new Error('CompoundRootContext is not defined. Is useCompoundState called outside the CompoundProvider?')
     }
-    bindHookArgs(compoundStateHook, name)
+
+    // rebindHook(compoundStateHook, internalCompoundState, name)
     return context[compoundStateHook];
 };

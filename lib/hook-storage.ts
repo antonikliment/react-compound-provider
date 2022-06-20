@@ -19,13 +19,14 @@ export function registerHook(hookFunction: <T> (...args) => T, key = Math.random
     hookStorage[key] = hookFunction;
     return `${key}`;
 }
-export function bindHookArgs( key, ...args) {
-    hookStorage[key].bind(null, ...args)
-}
+// export function rebindHook(key, func, ...args) {
+//     hookStorage[key] = hookStorage[key].bind(hookStorage[key], ...args)
+// }
 
 export function compoundHookState() {
     let compoundState = {};
     const hooks = Object.entries(hookStorage);
+
     for (const hookPair of hooks) {
         const key = hookPair[0];
         const value = hookPair[1];
